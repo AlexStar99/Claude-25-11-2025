@@ -1,4 +1,4 @@
-import { DoodleElement } from '../types';
+import type { DoodleElement } from '../types';
 
 interface DoodlesProps {
   elements: DoodleElement[];

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Slide } from './types';
+import type { Slide } from './types';
 import { SlidePreview } from './components/SlidePreview';
 import { SlideEditor } from './components/SlideEditor';
 import { BulkGenerator } from './components/BulkGenerator';

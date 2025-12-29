@@ -1,4 +1,4 @@
-import { Slide } from '../types';
+import type { Slide } from '../types';
 import { Doodles, generateRandomDoodles } from '../components/Doodles';
 import { getRandomOffset, getRandomRotation } from '../utils/textProcessing';
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Slide } from '../types';
+import type { Slide } from '../types';
 import { layouts } from '../layouts/layouts';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 

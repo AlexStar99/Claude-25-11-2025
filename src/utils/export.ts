@@ -1,5 +1,5 @@
 import { toPng } from 'html-to-image';
-import { Slide } from '../types';
+import type { Slide } from '../types';
 
 export async function exportSlideAsPng(slideId: string, filename: string): Promise<void> {
   const element = document.getElementById(`slide-${slideId}`);

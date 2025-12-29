@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Slide } from '../types';
+import type { Slide } from '../types';
 import { layouts } from '../layouts/layouts';
 import { Upload, Image as ImageIcon, Type, Layout, Trash2 } from 'lucide-react';
 

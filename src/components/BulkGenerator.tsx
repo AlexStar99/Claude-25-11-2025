@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FileText, Sparkles } from 'lucide-react';
 import { parseTextToSlides } from '../utils/textProcessing';
-import { Slide } from '../types';
+import type { Slide } from '../types';
 
 interface BulkGeneratorProps {
   onGenerate: (slides: Slide[]) => void;
