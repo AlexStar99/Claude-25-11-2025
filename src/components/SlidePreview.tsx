@@ -78,8 +78,29 @@ export function SlidePreview({
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [canNavigatePrev, canNavigateNext, onNavigate]);
 
-  const layoutComponent = layouts.find((l) => l.id === slide.layoutId)?.component || layouts[0].component;
-  const LayoutComponent = layoutComponent;
+  // Safely get layout component with validation
+  const getLayoutComponent = () => {
+    if (!layouts || layouts.length === 0) {
+      console.error('No layouts available');
+      return null;
+    }
+
+    const foundLayout = layouts.find((l) => l.id === slide.layoutId);
+    if (foundLayout?.component) {
+      return foundLayout.component;
+    }
+
+    // Fallback to first layout if current layout not found
+    if (layouts[0]?.component) {
+      console.warn(`Layout "${slide.layoutId}" not found, using default layout`);
+      return layouts[0].component;
+    }
+
+    console.error('No valid layout components available');
+    return null;
+  };
+
+  const LayoutComponent = getLayoutComponent();
 
   return (
     <div className="flex flex-col h-full">
@@ -140,7 +161,15 @@ export function SlidePreview({
           )}
 
           {/* Контент слайда */}
-          <LayoutComponent slide={slide} fontSize={fontSize} />
+          {LayoutComponent ? (
+            <LayoutComponent slide={slide} fontSize={fontSize} />
+          ) : (
+            <div className="flex items-center justify-center h-full p-8">
+              <p className="text-red-600 text-center">
+                Ошибка: Не удалось загрузить макет слайда
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

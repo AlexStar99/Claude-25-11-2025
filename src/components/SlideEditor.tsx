@@ -16,24 +16,80 @@ export function SlideEditor({ slide, onUpdate, onDelete }: SlideEditorProps) {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Пожалуйста, выберите файл изображения');
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    const maxSize = 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+      alert('Размер файла не должен превышать 10MB');
+      return;
+    }
+
     const reader = new FileReader();
+
     reader.onload = (event) => {
-      const imageUrl = event.target?.result as string;
-      onUpdate({ ...slide, backgroundImage: imageUrl });
+      try {
+        const result = event.target?.result;
+        if (!result || typeof result !== 'string') {
+          throw new Error('Не удалось прочитать файл');
+        }
+        onUpdate({ ...slide, backgroundImage: result });
+      } catch (error) {
+        console.error('Error processing image:', error);
+        alert('Ошибка при обработке изображения. Попробуйте другой файл.');
+      }
     };
+
+    reader.onerror = () => {
+      console.error('FileReader error:', reader.error);
+      alert('Ошибка при чтении файла. Пожалуйста, попробуйте снова.');
+    };
+
     reader.readAsDataURL(file);
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
-    if (!file || !file.type.startsWith('image/')) return;
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Пожалуйста, перетащите файл изображения');
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    const maxSize = 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+      alert('Размер файла не должен превышать 10MB');
+      return;
+    }
 
     const reader = new FileReader();
+
     reader.onload = (event) => {
-      const imageUrl = event.target?.result as string;
-      onUpdate({ ...slide, backgroundImage: imageUrl });
+      try {
+        const result = event.target?.result;
+        if (!result || typeof result !== 'string') {
+          throw new Error('Не удалось прочитать файл');
+        }
+        onUpdate({ ...slide, backgroundImage: result });
+      } catch (error) {
+        console.error('Error processing image:', error);
+        alert('Ошибка при обработке изображения. Попробуйте другой файл.');
+      }
     };
+
+    reader.onerror = () => {
+      console.error('FileReader error:', reader.error);
+      alert('Ошибка при чтении файла. Пожалуйста, попробуйте снова.');
+    };
+
     reader.readAsDataURL(file);
   };
 
@@ -94,7 +150,11 @@ export function SlideEditor({ slide, onUpdate, onDelete }: SlideEditorProps) {
             min="12"
             max="48"
             value={slide.fontSize || 28}
-            onChange={(e) => onUpdate({ ...slide, fontSize: parseInt(e.target.value) })}
+            onChange={(e) => {
+              const parsedValue = parseInt(e.target.value, 10);
+              const fontSize = isNaN(parsedValue) ? 28 : Math.max(12, Math.min(48, parsedValue));
+              onUpdate({ ...slide, fontSize });
+            }}
             className="w-full"
           />
         </div>

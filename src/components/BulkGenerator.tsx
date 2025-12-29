@@ -28,20 +28,35 @@ export function BulkGenerator({ onGenerate }: BulkGeneratorProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleGenerate = () => {
-    if (!text.trim()) return;
+    if (!text.trim()) {
+      alert('Пожалуйста, введите текст для создания слайдов');
+      return;
+    }
 
-    const parsedSlides = parseTextToSlides(text);
-    const slides: Slide[] = parsedSlides.map((slide, index) => ({
-      id: `slide-${Date.now()}-${index}`,
-      title: slide.title,
-      subtitle: slide.subtitle,
-      body: slide.body,
-      layoutId: ['centered', 'left', 'split', 'corner'][index % 4],
-      fontSize: 28,
-    }));
+    try {
+      const parsedSlides = parseTextToSlides(text);
 
-    onGenerate(slides);
-    setIsExpanded(false);
+      if (parsedSlides.length === 0) {
+        alert('Не удалось распознать слайды в тексте. Проверьте формат:\n### Заголовок\n## Подзаголовок\nТекст');
+        return;
+      }
+
+      const slides: Slide[] = parsedSlides.map((slide, index) => ({
+        id: `slide-${Date.now()}-${index}`,
+        title: slide.title || 'Без заголовка',
+        subtitle: slide.subtitle || '',
+        body: slide.body || '',
+        layoutId: ['centered', 'left', 'split', 'corner'][index % 4],
+        fontSize: 28,
+      }));
+
+      onGenerate(slides);
+      setIsExpanded(false);
+    } catch (error) {
+      console.error('Error parsing text to slides:', error);
+      const errorMsg = error instanceof Error ? error.message : 'Неизвестная ошибка';
+      alert(`Ошибка при обработке текста: ${errorMsg}`);
+    }
   };
 
   const handleLoadExample = () => {
@@ -119,7 +134,13 @@ export function BulkGenerator({ onGenerate }: BulkGeneratorProps) {
           {text && (
             <div className="mt-4 p-4 bg-blue-50 rounded-lg">
               <p className="text-sm text-blue-900">
-                Будет создано слайдов: {parseTextToSlides(text).length}
+                Будет создано слайдов: {(() => {
+                  try {
+                    return parseTextToSlides(text).length;
+                  } catch {
+                    return 0;
+                  }
+                })()}
               </p>
             </div>
           )}

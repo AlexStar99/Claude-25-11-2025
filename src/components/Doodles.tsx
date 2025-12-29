@@ -99,19 +99,41 @@ export function Doodles({ elements }: DoodlesProps) {
  * Генерирует случайные дудлы для слайда
  */
 export function generateRandomDoodles(count: number = 5): DoodleElement[] {
+  // Input validation
+  if (typeof count !== 'number' || isNaN(count)) {
+    console.warn('generateRandomDoodles: Invalid count, using default value of 5');
+    count = 5;
+  }
+
+  // Clamp count to reasonable limits to prevent performance issues
+  if (count < 0) {
+    console.warn('generateRandomDoodles: Negative count provided, using 0');
+    count = 0;
+  }
+
+  if (count > 50) {
+    console.warn('generateRandomDoodles: Count exceeds maximum (50), clamping to 50');
+    count = 50;
+  }
+
   const types: DoodleElement['type'][] = ['circle', 'line', 'square', 'triangle', 'curve'];
   const colors = ['#000000', '#333333', '#666666'];
   const doodles: DoodleElement[] = [];
 
-  for (let i = 0; i < count; i++) {
-    doodles.push({
-      type: types[Math.floor(Math.random() * types.length)],
-      x: Math.random() * 1080,
-      y: Math.random() * 1350,
-      size: 30 + Math.random() * 80,
-      rotation: Math.random() * 360,
-      color: colors[Math.floor(Math.random() * colors.length)],
-    });
+  try {
+    for (let i = 0; i < count; i++) {
+      doodles.push({
+        type: types[Math.floor(Math.random() * types.length)],
+        x: Math.random() * 1080,
+        y: Math.random() * 1350,
+        size: 30 + Math.random() * 80,
+        rotation: Math.random() * 360,
+        color: colors[Math.floor(Math.random() * colors.length)],
+      });
+    }
+  } catch (error) {
+    console.error('Error generating doodles:', error);
+    return []; // Return empty array on error
   }
 
   return doodles;
