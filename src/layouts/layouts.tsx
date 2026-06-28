@@ -1,16 +1,18 @@
-import type { Slide } from '../types';
+import type { LayoutProps } from '../types';
 import { Doodles, generateRandomDoodles } from '../components/Doodles';
 import { getRandomOffset, getRandomRotation } from '../utils/textProcessing';
 
-// Layout 1: Centered with random offset
-export function CenteredLayout({ slide, fontSize }: { slide: Slide; fontSize: number }) {
+export function CenteredLayout({ slide, fontSize, textColor = '#111111', accentColor = '#111111' }: LayoutProps) {
   const titleOffset = { x: getRandomOffset(-20, 20), y: getRandomOffset(-20, 20) };
   const subtitleOffset = { x: getRandomOffset(-15, 15), y: getRandomOffset(-15, 15) };
   const bodyOffset = { x: getRandomOffset(-10, 10), y: getRandomOffset(-10, 10) };
-  const doodles = generateRandomDoodles(4);
+  const doodles = generateRandomDoodles(4, accentColor);
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-center p-16 text-center">
+    <div
+      className="relative w-full h-full flex flex-col items-center justify-center p-16 text-center"
+      style={{ color: textColor }}
+    >
       <Doodles elements={doodles} />
 
       <div className="relative z-10" style={{ transform: `translate(${titleOffset.x}px, ${titleOffset.y}px) rotate(${getRandomRotation()}deg)` }}>
@@ -38,13 +40,12 @@ export function CenteredLayout({ slide, fontSize }: { slide: Slide; fontSize: nu
   );
 }
 
-// Layout 2: Left aligned with decorative elements
-export function LeftAlignedLayout({ slide, fontSize }: { slide: Slide; fontSize: number }) {
+export function LeftAlignedLayout({ slide, fontSize, textColor = '#111111', accentColor = '#111111' }: LayoutProps) {
   const titleRotation = getRandomRotation();
-  const doodles = generateRandomDoodles(5);
+  const doodles = generateRandomDoodles(5, accentColor);
 
   return (
-    <div className="relative w-full h-full flex flex-col justify-center p-20">
+    <div className="relative w-full h-full flex flex-col justify-center p-20" style={{ color: textColor }}>
       <Doodles elements={doodles} />
 
       <div className="relative z-10 max-w-4xl">
@@ -55,7 +56,7 @@ export function LeftAlignedLayout({ slide, fontSize }: { slide: Slide; fontSize:
         </div>
 
         {slide.subtitle && (
-          <div className="pl-4 border-l-4 border-black mb-8">
+          <div className="pl-4 border-l-4 mb-8" style={{ borderColor: accentColor }}>
             <h2 className="font-medium" style={{ fontSize: `${fontSize * 1.3}px`, lineHeight: '1.3' }}>
               {slide.subtitle}
             </h2>
@@ -74,16 +75,18 @@ export function LeftAlignedLayout({ slide, fontSize }: { slide: Slide; fontSize:
   );
 }
 
-// Layout 3: Split design
-export function SplitLayout({ slide, fontSize }: { slide: Slide; fontSize: number }) {
-  const doodles = generateRandomDoodles(6);
+export function SplitLayout({ slide, fontSize, textColor = '#111111', accentColor = '#111111' }: LayoutProps) {
+  const doodles = generateRandomDoodles(6, accentColor);
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-full" style={{ color: textColor }}>
       <Doodles elements={doodles} />
 
       {/* Top section */}
-      <div className="relative z-10 h-2/5 flex items-center justify-center p-16 bg-black bg-opacity-5">
+      <div
+        className="relative z-10 h-2/5 flex items-center justify-center p-16"
+        style={{ backgroundColor: `${accentColor}10` }}
+      >
         <div className="text-center">
           <h1 className="font-bold" style={{ fontSize: `${fontSize * 2.2}px`, lineHeight: '1.1' }}>
             {slide.title}
@@ -111,20 +114,22 @@ export function SplitLayout({ slide, fontSize }: { slide: Slide; fontSize: numbe
   );
 }
 
-// Layout 4: Corner accent
-export function CornerAccentLayout({ slide, fontSize }: { slide: Slide; fontSize: number }) {
-  const doodles = generateRandomDoodles(3);
+export function CornerAccentLayout({ slide, fontSize, textColor = '#111111', backgroundColor = '#FFFFFF', accentColor = '#111111' }: LayoutProps) {
+  const doodles = generateRandomDoodles(3, accentColor);
 
   return (
-    <div className="relative w-full h-full p-20">
+    <div className="relative w-full h-full p-20" style={{ color: textColor }}>
       <Doodles elements={doodles} />
 
       {/* Decorative corner */}
-      <div className="absolute top-0 right-0 w-80 h-80 bg-black opacity-5 rounded-bl-full z-0" />
+      <div
+        className="absolute top-0 right-0 w-80 h-80 rounded-bl-full z-0"
+        style={{ backgroundColor: accentColor, opacity: 0.08 }}
+      />
 
       <div className="relative z-10 h-full flex flex-col justify-between">
         <div>
-          <div className="inline-block px-8 py-4 bg-black text-white mb-8">
+          <div className="inline-block px-8 py-4 mb-8" style={{ backgroundColor: accentColor, color: backgroundColor }}>
             <h1 className="font-bold" style={{ fontSize: `${fontSize * 1.8}px`, lineHeight: '1.2' }}>
               {slide.title}
             </h1>

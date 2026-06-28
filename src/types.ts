@@ -6,6 +6,15 @@ export interface Slide {
   layoutId: string;
   backgroundImage?: string;
   fontSize?: number;
+  colorTheme?: string;
+}
+
+export interface LayoutProps {
+  slide: Slide;
+  fontSize: number;
+  textColor?: string;
+  backgroundColor?: string;
+  accentColor?: string;
 }
 
 export interface Layout {

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import type { Slide } from '../types';
+import type { Slide, LayoutProps } from '../types';
 import { layouts } from '../layouts/layouts';
+import { getTheme } from '../utils/colorThemes';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface SlidePreviewProps {
@@ -24,6 +25,8 @@ export function SlidePreview({
   const slideRef = useRef<HTMLDivElement>(null);
   const [fontSize, setFontSize] = useState(slide.fontSize || 28);
   const [scale, setScale] = useState(1);
+
+  const theme = getTheme(slide.colorTheme);
 
   // Автоадаптация размера шрифта
   useEffect(() => {
@@ -78,8 +81,8 @@ export function SlidePreview({
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [canNavigatePrev, canNavigateNext, onNavigate]);
 
-  const layoutComponent = layouts.find((l) => l.id === slide.layoutId)?.component || layouts[0].component;
-  const LayoutComponent = layoutComponent;
+  const layoutEntry = layouts.find((l) => l.id === slide.layoutId) ?? layouts[0];
+  const LayoutComponent = layoutEntry.component as React.ComponentType<LayoutProps>;
 
   return (
     <div className="flex flex-col h-full">
@@ -120,12 +123,14 @@ export function SlidePreview({
         <div
           id={`slide-${slide.id}`}
           ref={slideRef}
-          className="bg-white shadow-2xl overflow-hidden relative"
+          className="shadow-2xl overflow-hidden relative"
           style={{
             width: '1080px',
             height: '1350px',
             transform: `scale(${scale})`,
             transformOrigin: 'center center',
+            backgroundColor: slide.backgroundImage ? undefined : theme.backgroundColor,
+            color: theme.textColor,
           }}
         >
           {/* Фоновое изображение */}
@@ -140,7 +145,13 @@ export function SlidePreview({
           )}
 
           {/* Контент слайда */}
-          <LayoutComponent slide={slide} fontSize={fontSize} />
+          <LayoutComponent
+            slide={slide}
+            fontSize={fontSize}
+            textColor={slide.backgroundImage ? undefined : theme.textColor}
+            backgroundColor={slide.backgroundImage ? undefined : theme.backgroundColor}
+            accentColor={slide.backgroundImage ? undefined : theme.accentColor}
+          />
         </div>
       </div>
     </div>

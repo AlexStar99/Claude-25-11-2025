@@ -98,9 +98,9 @@ export function Doodles({ elements }: DoodlesProps) {
 /**
  * Генерирует случайные дудлы для слайда
  */
-export function generateRandomDoodles(count: number = 5): DoodleElement[] {
+export function generateRandomDoodles(count: number = 5, baseColor: string = '#000000'): DoodleElement[] {
   const types: DoodleElement['type'][] = ['circle', 'line', 'square', 'triangle', 'curve'];
-  const colors = ['#000000', '#333333', '#666666'];
+  const colors = [baseColor, baseColor, baseColor];
   const doodles: DoodleElement[] = [];
 
   for (let i = 0; i < count; i++) {

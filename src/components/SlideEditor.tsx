@@ -1,7 +1,8 @@
 import { useRef } from 'react';
 import type { Slide } from '../types';
 import { layouts } from '../layouts/layouts';
-import { Upload, Image as ImageIcon, Type, Layout, Trash2 } from 'lucide-react';
+import { COLOR_THEMES, getTheme } from '../utils/colorThemes';
+import { Upload, Image as ImageIcon, Type, Layout, Trash2, Palette } from 'lucide-react';
 
 interface SlideEditorProps {
   slide: Slide;
@@ -11,6 +12,7 @@ interface SlideEditorProps {
 
 export function SlideEditor({ slide, onUpdate, onDelete }: SlideEditorProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const activeTheme = getTheme(slide.colorTheme);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -120,6 +122,61 @@ export function SlideEditor({ slide, onUpdate, onDelete }: SlideEditorProps) {
               </button>
             ))}
           </div>
+        </div>
+
+        {/* Цветовая тема */}
+        <div>
+          <label className="block text-sm font-medium mb-3 flex items-center gap-2">
+            <Palette size={16} />
+            Цветовая тема
+          </label>
+          <div className="grid grid-cols-4 gap-3">
+            {COLOR_THEMES.map((theme) => {
+              const isActive = activeTheme.id === theme.id;
+              return (
+                <button
+                  key={theme.id}
+                  onClick={() => onUpdate({ ...slide, colorTheme: theme.id })}
+                  title={theme.name}
+                  className={`relative flex flex-col items-center gap-1.5 group`}
+                >
+                  <div
+                    className={`w-12 h-12 rounded-full border-2 transition-all ${
+                      isActive ? 'scale-110 shadow-md' : 'border-gray-200 hover:border-gray-400'
+                    }`}
+                    style={{
+                      backgroundColor: theme.backgroundColor,
+                      borderColor: isActive ? theme.accentColor : undefined,
+                    }}
+                  >
+                    {/* Text color preview dot */}
+                    <div
+                      className="absolute inset-0 flex items-center justify-center"
+                      style={{ color: theme.textColor }}
+                    >
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: theme.accentColor }}
+                      />
+                    </div>
+                    {isActive && (
+                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-black rounded-full flex items-center justify-center">
+                        <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+                          <path d="M1 4L3 6L7 2" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  <span className="text-xs text-gray-600 text-center leading-tight">{theme.name}</span>
+                </button>
+              );
+            })}
+          </div>
+          {slide.backgroundImage && (
+            <p className="text-xs text-gray-400 mt-2">
+              Тема не применяется при наличии фонового изображения
+            </p>
+          )}
         </div>
 
         {/* Фоновое изображение */}
